@@ -27,6 +27,7 @@ This project is a standalone, single-file C++ implementation designed for educat
 3. **Type-2 (Challenge):** The local server receives the token and processes it via `AcceptSecurityContext`, forcing Windows to generate a cryptographic server challenge and valid target attributes.
 4. **Type-3 (Authenticate):** The client processes the challenge and produces the final authentication token containing the encrypted NTLMv2 response.
 5. **Hash Extraction:** The server intercepts the `Type-3` message, extracts the 8-byte challenge and the dynamic `NtChallengeResponse` blob, combines them with the current user and domain names, and outputs a ready-to-crack NetNTLMv2 hash string.
+<img width="1082" height="528" alt="image" src="https://github.com/user-attachments/assets/697d5a41-c4f4-469a-ad9b-9cd3e4700e29" />
 
 ---
 
