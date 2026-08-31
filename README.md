@@ -1,4 +1,4 @@
-# Advanced Internal Monologue (C++ SSPI NTLM Extractor)
+# Internal Monologue Attack PoC
 
 > *"Have you ever thought to yourself, is it possible to have the victim and the attacker with turned on Responder on one machine? I have, and I thought: wow, this would be very interesting if malware were using that technique..."*
 
