@@ -16,7 +16,7 @@ This project is a standalone, single-file C++ implementation designed for educat
 * **Native SSPI Integration:** Leverages official Windows APIs (`secur32.dll`) to interact directly with the NTLM Security Support Provider (SSP), ensuring proper cryptographic structures and target information (`TargetInfo` / `AV_Pairs`) without triggering manual token malformation errors.
 * **TCP Loopback Handshake:** Implements a multi-threaded local server/client architecture (`127.0.0.1`) that cleanly executes the complete NTLM flow (`Type-1` $\rightarrow$ `Type-2` $\rightarrow$ `Type-3`).
 * **Hashcat Compatibility:** Automatically parses the binary response structure of the `Type-3` authentication packet, stripping unnecessary GSSAPI/NTLMSSP headers and formatting the output strictly for **Hashcat (mode 5600)**.
-* **Registry Downgrade Option (`-downgrade`):** Includes optional functionality to adjust the `LmCompatibilityLevel` via the Windows Registry to study how protocol downgrade attempts affect local authentication behavior.
+
 
 ---
 
@@ -36,5 +36,22 @@ This project is a standalone, single-file C++ implementation designed for educat
 To compile the project cleanly without Visual Studio using **MinGW-w64**:
 
 ```bash
-g++ -o ntlm_internal_monologue.exe ntlm_internal_monologue.cpp -lws2_32 -lsecur32 -lcrypt32 -pthread# Internal Monologue Attack
+g++ -o ntlm_internal_monologue.exe ntlm_internal_monologue.cpp -lws2_32 -lsecur32 -lcrypt32 -pthread # Internal Monologue Attack
+```
+**Important Note: Known Issue – Hash Corruption Due to Offset Parsing**
 
+The current implementation successfully completes the NTLM handshake (`Type-1` → `Type-2` → `Type-3`) and extracts a hash-like string. However, **the extracted hash is corrupted** and **not accepted by Hashcat** (mode 5600) or any other cracking tool.
+
+The root cause has been traced to **incorrect offset calculations** when parsing the `Type-3` (Authenticate) message:
+
+- The code reads the length and offset of the NT response from positions `+16` and `+20`, respectively.  
+- According to the NTLMSSP specification, the correct offsets are **`+20`** (length) and **`+24`** (offset).  
+- As a result, the extracted data corresponds to the **LM Response** or other header fields, not the actual `NtChallengeResponse` blob.
+
+Attempts to correct this by manually detecting the `"NTLMSSP"` signature and adjusting the pointer do **not** resolve the issue – they only mask the symptom, leaving the underlying parsing error intact.
+
+**No reliable fix has been identified at this time (I just don't know how to fix it)**  
+The problem is structural and would require a complete rewrite of the `Type-3` parsing logic, including proper handling of the `AV_Pairs` structure and verification of the `NTLMv2` response format.
+
+This version is provided **as-is for educational and research purposes only**.  
+It serves as a demonstration of the SSPI authentication flow but **should not be relied upon for producing valid NetNTLMv2 hashes**.
