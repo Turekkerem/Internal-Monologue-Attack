@@ -15,7 +15,7 @@ This project is a standalone, single-file C++ implementation designed for educat
 * **Single-File Architecture:** No complex Visual Studio project structures or external heavy dependencies required. Easily compilable using lightweight toolchains like MinGW-w64 (`g++`).
 * **Native SSPI Integration:** Leverages official Windows APIs (`secur32.dll`) to interact directly with the NTLM Security Support Provider (SSP), ensuring proper cryptographic structures and target information (`TargetInfo` / `AV_Pairs`) without triggering manual token malformation errors.
 * **TCP Loopback Handshake:** Implements a multi-threaded local server/client architecture (`127.0.0.1`) that cleanly executes the complete NTLM flow (`Type-1` $\rightarrow$ `Type-2` $\rightarrow$ `Type-3`).
-* **Hashcat Compatibility:** Automatically parses the binary response structure of the `Type-3` authentication packet, stripping unnecessary GSSAPI/NTLMSSP headers and formatting the output strictly for **Hashcat (mode 5600)**.
+* **Hashcat Compatibility** (If everything would work correctly  - read more below): Automatically parses the binary response structure of the `Type-3` authentication packet, stripping unnecessary GSSAPI/NTLMSSP headers and formatting the output strictly for **Hashcat (mode 5600)**.
 
 
 ---
